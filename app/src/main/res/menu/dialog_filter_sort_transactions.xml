@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/sort_by_group" android:checkableBehavior="single">
+        <item
+            android:id="@+id/popup_sort_newest_first"
+            android:title="Newest First" />
+        <item
+            android:id="@+id/popup_sort_oldest_first"
+            android:title="Oldest First" />
+        <item
+            android:id="@+id/popup_sort_price_high_to_low"
+            android:title="Price: High to Low" />
+        <item
+            android:id="@+id/popup_sort_price_low_to_high"
+            android:title="Price: Low to High" />
+    </group>
+
+    <group android:id="@+id/status_group" android:checkableBehavior="single">
+        <item
+            android:id="@+id/popup_status_all"
+            android:title="All" />
+        <item
+            android:id="@+id/popup_status_success"
+            android:title="Success" />
+        <item
+            android:id="@+id/popup_status_cancelled"
+            android:title="Cancelled" />
+    </group>
+
+    <item
+        android:id="@+id/popup_apply_filters"
+        android:title="Apply Filters" />
+
+</menu>
