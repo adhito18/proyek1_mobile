@@ -1,7 +1,8 @@
 package proyek1.mobile.uas
 
-data class Property(
+data class Favorite(
     val id: Int,
+    val userId: Int,
     val name: String,
     val description: String,
     val location: String,
@@ -10,5 +11,6 @@ data class Property(
     val bedrooms: String,
     val bathrooms: String,
     val photo: String,
-    var isFavorite: Boolean = false
+    val status: String,
+    val type: String
 )

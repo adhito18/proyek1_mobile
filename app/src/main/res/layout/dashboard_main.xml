@@ -98,13 +98,14 @@
         android:id="@+id/propertyRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="16dp"
         android:clipToPadding="false"
+        android:padding="16dp"
+        android:paddingBottom="80dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_property_card_vertical"
-        app:layout_constraintTop_toBottomOf="@id/searchCardView"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/searchCardView"
+        tools:listitem="@layout/item_property_card_vertical" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

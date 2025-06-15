@@ -1,12 +1,16 @@
 package proyek1.mobile.uas
 
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.toolbox.StringRequest
 import com.squareup.picasso.Picasso
 
 class PropertyAdapter(private var propertyList: List<Property>) :
@@ -43,6 +47,19 @@ class PropertyAdapter(private var propertyList: List<Property>) :
             .placeholder(R.drawable.property_thumbnail_placeholder)
             .into(holder.propertyImage)
 
+        // Tampilkan status favorit
+        holder.favoriteIcon.setImageResource(
+            if (property.isFavorite) R.drawable.ic_heart_red else R.drawable.ic_heart_filled
+        )
+
+        // Toggle saat diklik
+        holder.favoriteIcon.setOnClickListener {
+            toggleFavorite(holder.itemView.context, property) {
+                property.isFavorite = !property.isFavorite
+                notifyItemChanged(position)
+            }
+        }
+
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, PropertyDetailActivity::class.java).apply {
                 putExtra("name", property.name)
@@ -77,4 +94,38 @@ class PropertyAdapter(private var propertyList: List<Property>) :
         filteredList = newList.toMutableList()
         notifyDataSetChanged()
     }
+
+    private fun toggleFavorite(context: android.content.Context, property: Property, onSuccess: () -> Unit) {
+        val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("TOKEN", null)
+
+        if (token == null) {
+            Toast.makeText(context, "Token tidak ditemukan!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val url = "https://myprop.my.id/api/favorites/${property.id}/toggle"
+
+        val request = object : StringRequest(Method.POST, url,
+            { response ->
+                Log.d("TOGGLE_FAVORITE", "Success response: $response")
+                onSuccess()
+            },
+            { error ->
+                Log.e("TOGGLE_FAVORITE", "Error: ${error.message}")
+                Toast.makeText(context, "Gagal toggle favorite", Toast.LENGTH_SHORT).show()
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                headers["Accept"] = "application/json"
+                return headers
+            }
+        }
+
+
+        com.android.volley.toolbox.Volley.newRequestQueue(context).add(request)
+    }
+
 }
