@@ -17,6 +17,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -53,4 +57,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.google.android.material:material:1.6.0")
+    implementation("com.android.volley:volley:1.2.1")
+    implementation("com.squareup.picasso:picasso:2.71828")
 }
