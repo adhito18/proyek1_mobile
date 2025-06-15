@@ -1,100 +1,46 @@
-package proyek1.mobile.uas
+package proyek1.mobile.uas // Ensure this matches your actual package name
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import org.json.JSONObject
+import proyek1.mobile.uas.databinding.ActivitySignUpBinding // This is the generated binding class
 
 class SignUpActivity : AppCompatActivity() {
 
-    private lateinit var usernameEditText: EditText
-    private lateinit var emailEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var confirmPasswordEditText: EditText
-    private lateinit var phoneNumberEditText: EditText
-    private lateinit var signUpButton: Button
-
-    private val apiUrl = "https://myprop.my.id/api/register" // Sesuaikan dengan Laravel
+    // Declare the binding object
+    private lateinit var binding: ActivitySignUpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
+        // Inflate the layout using View Binding
+        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        // Set the content view to the root of the inflated layout
+        setContentView(binding.root)
 
-        // Hubungkan view
-        usernameEditText = findViewById(R.id.usernameEditText)
-        emailEditText = findViewById(R.id.emailEditText)
-        passwordEditText = findViewById(R.id.passwordEditText)
-        confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText)
-        phoneNumberEditText = findViewById(R.id.phoneNumberEditText)
-        signUpButton = findViewById(R.id.signUpButton)
+        // --- Add any specific logic for your Sign Up form here ---
 
-        // Klik tombol daftar
-        signUpButton.setOnClickListener {
-            performSignUp()
-        }
-    }
+        // Example: Set a click listener for the Sign Up button
+        binding.signUpButton.setOnClickListener {
+            // Get values from the EditText fields
+            val username = binding.usernameEditText.text.toString().trim()
+            val email = binding.emailEditText.text.toString().trim()
+            val password = binding.passwordEditText.text.toString().trim()
+            val confirmPassword = binding.confirmPasswordEditText.text.toString().trim()
+            val phoneNumber = binding.phoneNumberEditText.text.toString().trim()
 
-    private fun performSignUp() {
-        val name = usernameEditText.text.toString().trim()
-        val email = emailEditText.text.toString().trim()
-        val password = passwordEditText.text.toString()
-        val confirmPassword = confirmPasswordEditText.text.toString()
-        val phoneNumber = phoneNumberEditText.text.toString().trim()
+            // Basic validation example:
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || phoneNumber.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            } else if (password != confirmPassword) {
+                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+            } else {
+                // Here you would typically send data to a server, save to database, etc.
+                val message = "Sign Up successful!\nUsername: $username\nEmail: $email\nPhone: $phoneNumber"
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
-        // Validasi input kosong
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || phoneNumber.isEmpty()) {
-            Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Validasi format email
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Format email tidak valid", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Validasi panjang password
-        if (password.length < 8) {
-            Toast.makeText(this, "Password minimal 8 karakter", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Validasi konfirmasi password
-        if (password != confirmPassword) {
-            Toast.makeText(this, "Password tidak cocok", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Buat data JSON untuk dikirim
-        val requestData = JSONObject().apply {
-            put("name", name)
-            put("email", email)
-            put("password", password)
-            put("password_confirmation", confirmPassword)
-            put("phone_number", phoneNumber)
-        }
-
-        // Kirim request
-        val request = JsonObjectRequest(
-            Request.Method.POST, apiUrl, requestData,
-            { response ->
-                Toast.makeText(this, "Registrasi berhasil", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
-            },
-            { error ->
-                val errorBody = error.networkResponse?.data?.let {
-                    String(it)
-                } ?: error.message
-                Toast.makeText(this, "Gagal: $errorBody", Toast.LENGTH_LONG).show()
+                // Optionally, navigate back to LoginActivity or to a new screen
+                // finish() // This would close SignUpActivity and go back to the previous activity in the stack
             }
-        )
-
-        Volley.newRequestQueue(this).add(request)
+        }
     }
 }
