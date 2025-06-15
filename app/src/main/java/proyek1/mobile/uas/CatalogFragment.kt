@@ -47,19 +47,17 @@ class CatalogFragment : Fragment() {
 
         fetchPropertiesFromApi()
 
-        // Realtime search
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 adapter.filter(s.toString())
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Filter Popup
         imgFilter.setOnClickListener { showFilterPopup(it) }
 
-        // Lokasi
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         getLocation()
     }
@@ -127,9 +125,10 @@ class CatalogFragment : Fragment() {
     }
 
     private fun getLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+        if (
+            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -143,34 +142,25 @@ class CatalogFragment : Fragment() {
                 try {
                     val geocoder = Geocoder(requireContext(), Locale.getDefault())
                     val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                    if (!addresses.isNullOrEmpty()) {
-                        val address = addresses[0]
-                        val locality = address.locality
-                        val subAdmin = address.subAdminArea
-                        val admin = address.adminArea
-
-                        val readableLocation = when {
-                            !locality.isNullOrEmpty() -> "$locality, $admin"
-                            !subAdmin.isNullOrEmpty() -> "$subAdmin, $admin"
-                            !admin.isNullOrEmpty() -> admin
+                    val readableLocation = addresses?.firstOrNull()?.let { address ->
+                        when {
+                            !address.locality.isNullOrEmpty() -> "${address.locality}, ${address.adminArea}"
+                            !address.subAdminArea.isNullOrEmpty() -> "${address.subAdminArea}, ${address.adminArea}"
+                            !address.adminArea.isNullOrEmpty() -> address.adminArea
                             else -> "Lokasi tidak diketahui"
                         }
-
-                        locationNameTextView.text = readableLocation
-                    } else {
-                        locationNameTextView.text = "Lokasi tidak ditemukan"
-                    }
-
+                    } ?: "Lokasi tidak ditemukan"
+                    locationNameTextView.text = readableLocation
                 } catch (e: Exception) {
+                    locationNameTextView.text = "Gagal memuat lokasi"
                     Toast.makeText(requireContext(), "Gagal memuat lokasi: ${e.message}", Toast.LENGTH_SHORT).show()
-                    locationNameTextView.text = "Error Location"
                 }
             } else {
                 locationNameTextView.text = "Location not available"
             }
         }.addOnFailureListener {
-            Toast.makeText(requireContext(), "Gagal mengambil lokasi", Toast.LENGTH_SHORT).show()
             locationNameTextView.text = "Error Location"
+            Toast.makeText(requireContext(), "Gagal mengambil lokasi", Toast.LENGTH_SHORT).show()
         }
     }
 }

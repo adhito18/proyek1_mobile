@@ -40,10 +40,8 @@ class PropertyAdapter(private var propertyList: List<Property>) :
         holder.locationTag.text = property.location
 
         val baseUrl = "https://myprop.my.id/storage/"
-        val fullPhotoUrl = baseUrl + property.photo
-
         Picasso.get()
-            .load(fullPhotoUrl)
+            .load(baseUrl + property.photo)
             .placeholder(R.drawable.property_thumbnail_placeholder)
             .into(holder.propertyImage)
 
@@ -52,7 +50,7 @@ class PropertyAdapter(private var propertyList: List<Property>) :
             if (property.isFavorite) R.drawable.ic_heart_red else R.drawable.ic_heart_filled
         )
 
-        // Toggle saat diklik
+        // Toggle favorit saat diklik
         holder.favoriteIcon.setOnClickListener {
             toggleFavorite(holder.itemView.context, property) {
                 property.isFavorite = !property.isFavorite
@@ -61,17 +59,20 @@ class PropertyAdapter(private var propertyList: List<Property>) :
         }
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, PropertyDetailActivity::class.java).apply {
+            val context = holder.itemView.context
+            val intent = Intent(context, PropertyDetailActivity::class.java).apply {
+                putExtra("id", property.id)
                 putExtra("name", property.name)
-                putExtra("price", property.price)
-                putExtra("location", property.location)
                 putExtra("description", property.description)
+                putExtra("type", property.type)
+                putExtra("location", property.location)
+                putExtra("price", property.price)
                 putExtra("size", property.size)
                 putExtra("bedrooms", property.bedrooms)
                 putExtra("bathrooms", property.bathrooms)
                 putExtra("photo", property.photo)
             }
-            holder.itemView.context.startActivity(intent)
+            context.startActivity(intent)
         }
     }
 
@@ -95,7 +96,7 @@ class PropertyAdapter(private var propertyList: List<Property>) :
         notifyDataSetChanged()
     }
 
-    private fun toggleFavorite(context: android.content.Context, property: Property, onSuccess: () -> Unit) {
+    private fun toggleFavorite(context: Context, property: Property, onSuccess: () -> Unit) {
         val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("TOKEN", null)
 
@@ -124,8 +125,6 @@ class PropertyAdapter(private var propertyList: List<Property>) :
             }
         }
 
-
         com.android.volley.toolbox.Volley.newRequestQueue(context).add(request)
     }
-
 }

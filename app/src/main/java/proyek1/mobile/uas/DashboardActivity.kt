@@ -25,7 +25,16 @@ class DashboardActivity : AppCompatActivity() {
         syncFavorites(token)
 
         // Set default fragment
-        loadFragment(CatalogFragment())
+        val navTo = intent.getStringExtra("navigate_to")
+
+        if (navTo == "catalog") {
+            loadFragment(CatalogFragment())
+            binding.bottomNavigation.selectedItemId = R.id.navigation_home
+        } else {
+            // Set default fragment
+            loadFragment(CatalogFragment())
+            binding.bottomNavigation.selectedItemId = R.id.navigation_home
+        }
 
         // Handle navigation item selection
         binding.bottomNavigation.setOnItemSelectedListener { item ->
@@ -76,7 +85,6 @@ class DashboardActivity : AppCompatActivity() {
                 Toast.makeText(this, "Favorit disinkronkan", Toast.LENGTH_SHORT).show()
             },
             {
-                Toast.makeText(this, "Gagal sinkronisasi favorit", Toast.LENGTH_SHORT).show()
             }) {
             override fun getHeaders(): MutableMap<String, String> {
                 return hashMapOf(

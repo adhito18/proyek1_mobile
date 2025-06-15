@@ -62,7 +62,8 @@ class PaymentWebViewActivity : AppCompatActivity() {
                 Toast.makeText(this@PaymentWebViewActivity, message, Toast.LENGTH_SHORT).show()
 
                 // Kembali ke PropertyListActivity
-                val intent = Intent(this@PaymentWebViewActivity, PropertyListActivity::class.java)
+                val intent = Intent(this@PaymentWebViewActivity, DashboardActivity::class.java)
+                intent.putExtra("navigate_to", "catalog")
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
                 finish()

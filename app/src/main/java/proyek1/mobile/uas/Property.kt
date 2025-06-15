@@ -5,6 +5,7 @@ data class Property(
     val name: String,
     val description: String,
     val location: String,
+    val type: String,
     val price: String,
     val size: String,
     val bedrooms: String,

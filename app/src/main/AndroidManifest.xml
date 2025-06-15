@@ -25,9 +25,10 @@
         </activity>
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity" />
-<!--        <activity android:name=".PropertyListActivity" />-->
         <activity android:name=".PropertyDetailActivity" />
         <activity android:name=".DashboardActivity" />
+        <activity android:name=".BookingDetailActivity" />
+        <activity android:name=".PaymentWebViewActivity" />
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 
