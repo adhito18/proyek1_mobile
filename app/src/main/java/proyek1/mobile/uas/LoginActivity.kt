@@ -17,6 +17,22 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 1. Cek status "Remember Me" di awal
+        val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+        val isRemembered = sharedPreferences.getBoolean("is_remembered", false)
+        val token = sharedPreferences.getString("auth_token", null)
+
+        if (isRemembered && token != null) {
+            // Jika "diingat" dan token ada, langsung ke activity utama
+            val intent = Intent(this, CatalogFragment::class.java)
+            intent.putExtra("token", token)
+            startActivity(intent)
+            finish() // Tutup LoginActivity agar tidak bisa kembali ke sini
+            return   // Hentikan eksekusi sisa onCreate
+        }
+
+        // Jika tidak "diingat", lanjutkan proses normal untuk menampilkan layout login
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -37,24 +53,29 @@ class LoginActivity : AppCompatActivity() {
             val request = object : JsonObjectRequest(
                 Method.POST, baseUrl, jsonBody,
                 JsonObjectRequest@{ response ->
-                    val token = response.optString("access_token", null)
-                    android.util.Log.d("TOKEN_DEBUG", "Token yang diterima: $token")
+                    val responseToken = response.optString("access_token", null)
                     val user = response.optJSONObject("user")
                     val name = user?.optString("name", "Pengguna") ?: "Pengguna"
 
-                    if (token == null) {
+                    if (responseToken == null) {
                         Toast.makeText(this, "Login gagal: token tidak ditemukan", Toast.LENGTH_SHORT).show()
                         return@JsonObjectRequest
                     }
 
+                    // 2. Simpan status checkbox saat login berhasil
+                    val rememberMe = binding.rememberMeCheckBox.isChecked
+
+                    // Simpan token, nama, dan status "remember me"
+                    sharedPreferences.edit()
+                        .putString("auth_token", responseToken)
+                        .putString("user_name", name)
+                        .putBoolean("is_remembered", rememberMe) // Simpan status checkbox
+                        .apply()
+
                     Toast.makeText(this, "Selamat datang, $name", Toast.LENGTH_SHORT).show()
 
-                    // SIMPAN TOKEN ke SharedPreferences
-                    val sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    sharedPreferences.edit().putString("TOKEN", token).apply()
-
-                    val intent = Intent(this, DashboardActivity::class.java)
-                    intent.putExtra("token", token)
+                    val intent = Intent(this,DashboardActivity::class.java)
+                    intent.putExtra("token", responseToken)
                     startActivity(intent)
                     finish()
                 },

@@ -76,6 +76,7 @@ class FavoriteFragment : Fragment() {
                         description = item.getString("description"),
                         location = item.getString("location"),
                         price = item.getString("price"),
+                        type = item.getString("type"),
                         size = item.getString("size"),
                         bedrooms = item.getString("bedrooms"),
                         bathrooms = item.getString("bathrooms"),

@@ -84,11 +84,12 @@
                 android:paddingEnd="12dp" />
 
             <ImageButton
+                android:id="@+id/imgFilter"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_filter"
                 android:contentDescription="Filter"
+                android:src="@drawable/ic_filter"
                 app:tint="#007BFF" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -98,14 +99,13 @@
         android:id="@+id/propertyRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipToPadding="false"
         android:padding="16dp"
-        android:paddingBottom="80dp"
+        android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_property_card_vertical"
         app:layout_constraintTop_toBottomOf="@id/searchCardView"
-        tools:listitem="@layout/item_property_card_vertical" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
